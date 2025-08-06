@@ -22,14 +22,14 @@ In my opinion, REST endpoints would be a better fit:
 - DELETE `/currency_rest/{name}`
 - GET `/currency_rest/{name}[?timestamp={timestamp}]`
 
-golangci-lint was used to lint the source code.
+`golangci-lint` was used to lint Go source code, `redocly-cli` - to lint `openapi.yaml`.
+
+I have prerendered API documentation from `openapi.yaml` with
+`redocly`. The HTML file is in the project root (`openapi.html`).
 
 # TODO
-- [ ] OpenAPI
-  - [ ] OpenAPI 3.0 yaml spec
-  - [ ] Use [redocli-cli](https://redocly.com/redocly-cli) in a pre-commit hook (or in a CI pipeline) to validate the spec
-  - [ ] Write tests to check if API matches
 - [ ] clean up error handling
+- [ ] CI pipeline with commitlint, golangci-lint, redocly
 
 # Running
 Create a `.env` file with the following structure:

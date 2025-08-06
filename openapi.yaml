@@ -1,0 +1,98 @@
+components:
+  parameters:
+    SymbolParam:
+      description: Symbol of the currency
+      in: path
+      name: symbol
+      required: true
+      schema:
+        example: btc
+        type: string
+
+info:
+  description: |-
+    this API roughly corresponds to assignment requirements.
+    
+    It would be better to adopt REST-like structure:
+    - `POST /currency/` (with `symbol` in JSON payload) or `POST /currency/{symbol}` to add to watch list
+    - `DELETE /currency/{symbol}` to remove from the watch list
+    - `GET /currency/{symbol}` to get the price
+  license:
+    name: unlicensed
+    url: example.com
+  title: Interview assignment
+  version: 0.0.0
+
+openapi: 3.0.4
+
+paths:
+  /currency/add/{symbol}:
+    post:
+      description: Add a currency to the watch list by symbol.
+      operationId: addToWatchList
+      parameters:
+        - $ref: '#/components/parameters/SymbolParam'
+      responses:
+        '200':
+          description: Successfully added to watchlist
+        '400':
+          description: Invalid symbol format
+        '404':
+          description: Currency corresponding to the symbol was not found
+      summary: Add a currency to the watch list.
+      tags:
+        - currency
+  
+  /currency/price/{symbol}:
+    get:
+      description: Get currency price by symbol (most recent or closest to provided timestamp).
+      operationId: getPrice
+      parameters:
+        - $ref: '#/components/parameters/SymbolParam'
+        - description: UNIX timestamp
+          in: query
+          name: timestamp
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: Price in USD
+                example: 123.456
+                type: number
+          description: Got the price in USD
+        '400':
+          description: Invalid symbol or timestamp format
+        '404':
+          description: No recorded prices for the currency
+      summary: Get currency price.
+      tags:
+        - currency
+
+  /currency/remove/{symbol}:
+    post:
+      description: Remove a currency from the watch list by symbol.
+      operationId: removeFromWatchList
+      parameters:
+        - $ref: '#/components/parameters/SymbolParam'
+      responses:
+        '200':
+          description: Successfully removed from the watchlist
+        '400':
+          description: Invalid symbol format
+        '404':
+          description: Symbol was not found
+      summary: Remove a currency from the watch list.
+      tags:
+        - currency
+security: []
+
+servers:
+  - url: http://127.0.0.1:8000
+
+tags:
+  - description: Endpoints for currency watchlist
+    name: currency

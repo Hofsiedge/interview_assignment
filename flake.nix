@@ -26,6 +26,7 @@
           (go-migrate.overrideAttrs (oldAttrs: {
             tags = [ "postgres" ];
           }))
+          redocly
         ];
         shellHook = ''
           export ROOT=$PWD
