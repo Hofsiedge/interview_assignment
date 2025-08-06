@@ -3,6 +3,21 @@ networks:
     name: 'interview_db'
 
 services:
+  api:
+    container_name: interview_api
+    depends_on:
+      - db
+    environment:
+      COIN_GECKO_TOKEN: ${COIN_GECKO_TOKEN:?}
+      POLLING_INTERVAL: ${POLLING_INTERVAL:?}
+      POSTGRES_URL: "postgres://${DB_USERNAME}:${DB_PASSWORD}@interview_db:5432/${DB_DATABASE}?sslmode=disable"
+    image: interview-test:latest
+    networks:
+      - db
+    ports:
+      - 8000:80
+    restart: unless-stopped
+
   db:
     container_name: interview_db
     environment:
