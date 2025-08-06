@@ -29,7 +29,15 @@ func New(token string, httpClient *http.Client) *Client {
 // GetPrices returns a map of prices (in USD) of the provided coin symbols.
 //
 // Symbols that could not be found are skipped.
-func (c *Client) GetPrices(coins []string) (map[string]float64, error) {
+func (c *Client) GetPrices(coins ...string) (map[string]float64, error) {
+	if len(coins) == 0 {
+		return nil, fmt.Errorf("no symbols were provided")
+	}
+
+	if len(coins) > 50 {
+		return nil, fmt.Errorf("expected at most 50 symbols, got %d", len(coins))
+	}
+
 	url := fmt.Sprintf(c.priceURL, strings.Join(coins, ","))
 	// TODO: NewRequestWithContext
 	req, err := http.NewRequest(http.MethodGet, url, nil)
@@ -60,6 +68,15 @@ func (c *Client) GetPrices(coins []string) (map[string]float64, error) {
 	}
 
 	return unmarshalResponseBody(body)
+}
+
+func (c *Client) ValidateSymbol(coin string) (bool, error) {
+	prices, err := c.GetPrices(coin)
+	if err != nil {
+		return false, err
+	}
+
+	return len(prices) == 1, nil
 }
 
 type responseEntry struct {

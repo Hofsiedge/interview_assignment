@@ -6,6 +6,8 @@ import (
 	"net/http/httptest"
 	"reflect"
 	"testing"
+
+	"interview/src/internal/client"
 )
 
 func TestUnmarshalResponseBody(t *testing.T) {
@@ -107,7 +109,7 @@ func TestGetPrices(t *testing.T) {
 
 			apiClient := New(authToken, &httpClient)
 
-			result, err := apiClient.GetPrices(tt.coins)
+			result, err := apiClient.GetPrices(tt.coins...)
 
 			if !errors.Is(err, tt.err) {
 				t.Errorf("got `%v` error, expected `%v`", err, tt.err)
@@ -119,3 +121,6 @@ func TestGetPrices(t *testing.T) {
 		})
 	}
 }
+
+// ensure interface compliance
+var _ client.Client = &Client{}
